@@ -1,0 +1,39 @@
+# PostgreSQL Configuration
+# Using Bitnami PostgreSQL Chart v18.2.3
+# Documentation: https://artifacthub.io/packages/helm/bitnami/postgresql
+
+# Resource preset: small
+# This automatically configures resource requests and limits
+resourcesPreset: "small"
+
+# Authentication
+auth:
+  # PostgreSQL admin password (change this in production!)
+  postgresPassword: "changeme"
+  # Default database to create
+  database: "myapp"
+  # Default user to create
+  username: "myapp"
+  # Password for the default user
+  password: "changeme"
+
+# Primary configuration
+primary:
+  # Persistence for primary instance
+  persistence:
+    enabled: true
+    size: 8Gi
+    # storageClass: "" # Uncomment and set if you need a specific storage class
+
+# Read replicas (disabled by default)
+readReplicas:
+  replicaCount: 0
+
+# Metrics exporter for Prometheus integration
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    labels:
+      release: prometheus

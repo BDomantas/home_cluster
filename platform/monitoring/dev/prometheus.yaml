@@ -1,0 +1,7 @@
+server:
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  retention: 3d

@@ -1,0 +1,83 @@
+environments:
+  default:
+  dev:
+  prod:
+
+---
+
+repositories:
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: runix
+    url: https://helm.runix.net/
+
+hooks:
+  - events: ["prepare", "presync"]
+    command: "kubectl"
+    args: ["apply", "-f", "cluster/base/namespaces.yaml"]
+
+releases:
+  - name: prometheus
+    namespace: monitoring
+    chart: prometheus-community/prometheus
+    version: 28.7.0
+    values:
+      - platform/monitoring/values/prometheus.yaml
+      - platform/monitoring/{{ .Environment.Name }}/prometheus.yaml
+
+  - name: grafana
+    namespace: monitoring
+    chart: grafana/grafana
+    version: 10.5.15
+    hooks:
+      - events: ["presync"]
+        command: "/bin/bash"
+        args:
+          - "-c"
+          - >-
+            kubectl create configmap custom-dashboards
+            --from-file=platform/monitoring/grafana_dashboards
+            -n monitoring
+            --dry-run=client -o yaml
+            | kubectl label -f - grafana_dashboard=1 --local -o yaml
+            | kubectl apply -f -
+    values:
+      - platform/monitoring/values/grafana.yaml
+      - platform/monitoring/{{ .Environment.Name }}/grafana.yaml
+
+  - name: loki
+    namespace: monitoring
+    chart: grafana/loki
+    version: 6.51.0
+    values:
+      - platform/monitoring/values/loki.yaml
+      - platform/monitoring/{{ .Environment.Name }}/loki.yaml
+    hooks:
+      - events: ["postsync"]
+        command: "kubectl"
+        args: ["apply", "-f", "platform/monitoring/values/ingress.yaml", "-f", "platform/database/values/database-ingress.yaml", "-f", "platform/database/values/pgadmin-servers.yaml"]
+
+  - name: promtail
+    namespace: monitoring
+    chart: grafana/promtail
+    version: 6.17.1
+    values:
+      - platform/monitoring/values/promtail.yaml
+
+  - name: pgadmin4
+    namespace: database
+    chart: runix/pgadmin4
+    version: 1.57.0
+    values:
+      - platform/database/values/pgadmin4.yaml
+
+  - name: postgresql
+    namespace: database
+    chart: bitnami/postgresql
+    version: 18.2.3
+    values:
+      - platform/database/values/postgresql.yaml
