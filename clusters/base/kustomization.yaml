@@ -1,6 +1,5 @@
-# clusters/base/kustomization.yaml
 resources:
   - namespaces.yaml
-  - ../../platform/monitoring/application.yaml
-  - ../../platform/logging/application.yaml
-  - ../../platform/promtail/application.yaml
+  - apps/monitoring.yaml
+  - apps/logging.yaml
+  - apps/promtail.yaml
