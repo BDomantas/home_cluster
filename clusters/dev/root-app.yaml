@@ -7,8 +7,8 @@ spec:
   project: default
 
   source:
-    repoURL: git@github.com:BDomantas/home_cluster.git
-    targetRevision: main
+    repoURL: https://github.com/BDomantas/home_cluster.git
+    targetRevision: master
     path: clusters/base
 
   destination:
