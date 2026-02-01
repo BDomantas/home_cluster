@@ -1,0 +1,4 @@
+server:
+  service:
+    type: ClusterIP
+# optional: ingress, admin password, etc.

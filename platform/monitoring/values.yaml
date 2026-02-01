@@ -1,0 +1,98 @@
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    retention: 15d
+    retentionSize: 10GB
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 1
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+grafana:
+  replicas: 1
+
+  persistence:
+    enabled: true
+    size: 1Gi
+
+  initChownData:
+    enabled: false
+
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+  adminUser: admin
+  adminPassword: admin
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+
+  dashboards:
+    default:
+      node-exporter:
+        gnetId: 1860
+        revision: 22
+        datasource: Prometheus
+      loki:
+        gnetId: 13639
+        datasource: Loki
+      k8s-views-global:
+        gnetId: 15757
+        datasource: Prometheus
+      k8s-views-nodes:
+        gnetId: 15759
+        datasource: Prometheus
+      k8s-views-pods:
+        gnetId: 15758
+        datasource: Prometheus
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      searchNamespace: ALL
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://monitoring-kube-prometheus-prometheus:9090
+          access: proxy
+          isDefault: true
+        - name: Loki
+          type: loki
+          url: http://loki:3100
+          access: proxy
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.localhost
+    path: /
+    pathType: Prefix

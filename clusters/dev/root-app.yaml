@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR/repo
+    repoURL: git@github.com:BDomantas/home_cluster.git
     targetRevision: main
     path: platform
   destination:

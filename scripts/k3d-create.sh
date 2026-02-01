@@ -4,5 +4,5 @@ set -e
 k3d cluster create dev \
   --servers 1 \
   --agents 1 \
-  -p "8080:80@loadbalancer" \
+  --port "8080:80@loadbalancer" \
   --wait

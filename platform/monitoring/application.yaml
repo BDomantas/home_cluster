@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: oci://ghcr.io/prometheus-community/charts
+    chart: kube-prometheus-stack
+    targetRevision: 81.4.2   # chart version, pin to a stable release
+    helm:
+      releaseName: monitoring
+      valueFiles:
+        - values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
