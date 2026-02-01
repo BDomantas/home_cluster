@@ -52,44 +52,19 @@ grafana:
           options:
             path: /var/lib/grafana/dashboards/default
 
-  dashboards:
-    default:
-      node-exporter:
-        gnetId: 1860
-        revision: 22
-        datasource: Prometheus
-      loki:
-        gnetId: 13639
-        datasource: Loki
-      k8s-views-global:
-        gnetId: 15757
-        datasource: Prometheus
-      k8s-views-nodes:
-        gnetId: 15759
-        datasource: Prometheus
-      k8s-views-pods:
-        gnetId: 15758
-        datasource: Prometheus
-
   sidecar:
     dashboards:
       enabled: true
       label: grafana_dashboard
       searchNamespace: ALL
 
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: http://monitoring-kube-prometheus-prometheus:9090
-          access: proxy
-          isDefault: true
-        - name: Loki
-          type: loki
-          url: http://loki:3100
-          access: proxy
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki-gateway.logging.svc.cluster.local
+      access: proxy
+      editable: true
+
   ingress:
     enabled: true
     hosts:
