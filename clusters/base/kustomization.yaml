@@ -3,3 +3,5 @@ resources:
   - apps/monitoring.yaml
   - apps/logging.yaml
   - apps/promtail.yaml
+  - apps/sealed-secrets.yaml
+  - argocd/ghcr-oci-creds.sealedsecret.yaml
