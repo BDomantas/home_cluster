@@ -1,0 +1,2 @@
+resources:
+  - ghcr-oci-creds.sealedsecret.yaml
