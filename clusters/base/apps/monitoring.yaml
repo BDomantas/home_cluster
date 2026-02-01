@@ -15,7 +15,6 @@ spec:
       targetRevision: 81.4.2
       helm:
         releaseName: monitoring
-        skipCrds: false
         valueFiles:
           - $values/platform/monitoring/values.yaml
           - $values/platform/monitoring/values-dev.yaml
