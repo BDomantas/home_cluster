@@ -73,8 +73,11 @@ grafana:
     pathType: Prefix
 
 prometheusOperator:
+  tls:
+    enabled: false
   admissionWebhooks:
     enabled: false
     patch:
       enabled: false
+
 
