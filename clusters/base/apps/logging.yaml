@@ -10,7 +10,7 @@ spec:
   project: default
 
   sources:
-    - repoURL: oci://ghcr.io/grafana/helm-charts
+    - repoURL: ghcr.io/grafana/helm-charts
       chart: loki
       targetRevision: 6.51.0
       helm:
