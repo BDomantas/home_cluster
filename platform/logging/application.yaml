@@ -6,14 +6,18 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: oci://ghcr.io/grafana/charts
-    chart: loki
-    targetRevision: 6.51.0   # pinned latest version
-    helm:
-      releaseName: loki
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: oci://ghcr.io/grafana/helm-charts
+      chart: loki
+      targetRevision: 6.51.0
+      helm:
+        releaseName: loki
+        valueFiles:
+          - $values/platform/logging/values.yaml
+
+    - repoURL: https://github.com/BDomantas/home_cluster.git
+      targetRevision: master
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc

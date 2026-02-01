@@ -6,14 +6,18 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: oci://ghcr.io/grafana/helm-charts
-    chart: promtail
-    targetRevision: 6.17.1
-    helm:
-      releaseName: promtail
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: oci://ghcr.io/grafana/helm-charts
+      chart: promtail
+      targetRevision: 6.17.1
+      helm:
+        releaseName: promtail
+        valueFiles:
+          - $values/platform/promtail/values.yaml
+
+    - repoURL: https://github.com/BDomantas/home_cluster.git
+      targetRevision: master
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc

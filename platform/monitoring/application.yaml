@@ -6,14 +6,19 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: oci://ghcr.io/prometheus-community/charts
-    chart: kube-prometheus-stack
-    targetRevision: 81.4.2   # chart version, pin to a stable release
-    helm:
-      releaseName: monitoring
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: oci://ghcr.io/prometheus-community/charts
+      chart: kube-prometheus-stack
+      targetRevision: 81.4.2
+      helm:
+        releaseName: monitoring
+        valueFiles:
+          - $values/platform/monitoring/values.yaml
+          - $values/platform/monitoring/values-dev.yaml
+
+    - repoURL: https://github.com/BDomantas/home_cluster.git
+      targetRevision: master
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc
