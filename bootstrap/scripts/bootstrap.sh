@@ -8,6 +8,37 @@ REPO_ROOT="$(cd "$BOOTSTRAP_DIR/.." && pwd)"
 
 SECRETS_DIR="${SECRETS_DIR:-$HOME/.home_cluster_secrets}"
 SEALED_KEY_FILE="${SEALED_KEY_FILE:-$SECRETS_DIR/sealed-secrets-master-key.yaml}"
+echo
+echo "[freelens] Exporting kubeconfig for Freelens..."
+
+KUBECONFIG_OUT_DIR="${KUBECONFIG_OUT_DIR:-$HOME/.kube}"
+KUBECONFIG_OUT_FILE="${KUBECONFIG_OUT_FILE:-$KUBECONFIG_OUT_DIR/freelens-kubeconfig.yaml}"
+
+mkdir -p "$KUBECONFIG_OUT_DIR"
+
+# Prefer k3d-dev if it exists; otherwise use current context
+if kubectl config get-contexts -o name | grep -qx "k3d-dev"; then
+  CTX="k3d-dev"
+else
+  CTX="$(kubectl config current-context)"
+fi
+
+if [[ -z "$CTX" ]]; then
+  echo "ERROR: Could not determine kubectl context."
+  exit 1
+fi
+
+kubectl config view \
+  --minify \
+  --flatten \
+  --context="$CTX" \
+  > "$KUBECONFIG_OUT_FILE"
+
+chmod 600 "$KUBECONFIG_OUT_FILE"
+
+echo "Saved kubeconfig for Freelens:"
+echo "  Context: $CTX"
+echo "  File:    $KUBECONFIG_OUT_FILE"
 
 echo "[1/7] Creating argocd namespace/bootstrap manifests..."
 kubectl apply -k "$BOOTSTRAP_DIR"
