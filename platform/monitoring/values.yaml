@@ -71,3 +71,8 @@ grafana:
       - grafana.localhost
     path: /
     pathType: Prefix
+
+prometheusOperator: 
+  admissionWebhooks:
+    certManager:
+      enabled: true
