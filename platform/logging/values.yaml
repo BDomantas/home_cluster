@@ -45,6 +45,9 @@ minio:
     enabled: true
     size: 10Gi
 
+chunksCache:
+  enabled: false
+
 # Disable all other components for memory efficiency
 backend:
   replicas: 0
