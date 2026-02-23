@@ -1,21 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-secrets
+  name: infisical-bootstrap
   namespace: argocd
   annotations:
-    # Must be AFTER sealed-secrets (-10). Use -5 or 0.
-    argocd.argoproj.io/sync-wave: "-5"
+    # Apply after the operator is installed and CRDs are registered.
+    argocd.argoproj.io/sync-wave: "-8"
 spec:
   project: default
   source:
     repoURL: https://github.com/BDomantas/home_cluster.git
     targetRevision: master
-    path: clusters/base/argocd-secrets
+    path: platform/infisical/bootstrap
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: infisical-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

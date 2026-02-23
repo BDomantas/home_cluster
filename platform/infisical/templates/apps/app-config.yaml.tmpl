@@ -1,0 +1,25 @@
+apiVersion: secrets.infisical.com/v1alpha1
+kind: InfisicalSecret
+metadata:
+  name: ${INFISICAL_APP_CONFIG_SECRET_NAME}
+  namespace: ${INFISICAL_APP_CONFIG_NAMESPACE}
+spec:
+  authentication:
+    kubernetesAuth:
+      identityId: ${INFISICAL_IDENTITY_ID}
+      autoCreateServiceAccountToken: true
+      serviceAccountRef:
+        name: infisical-service-account
+        namespace: apps
+      secretsScope:
+        projectSlug: ${INFISICAL_PROJECT_SLUG}
+        envSlug: ${INFISICAL_ENV_SLUG}
+        secretsPath: "${INFISICAL_APP_CONFIG_PATH}"
+        recursive: true
+  managedKubeSecretReferences:
+    - secretName: ${INFISICAL_APP_CONFIG_SECRET_NAME}
+      secretNamespace: ${INFISICAL_APP_CONFIG_NAMESPACE}
+      creationPolicy: Orphan
+      template:
+        includeAllSecrets: true
+

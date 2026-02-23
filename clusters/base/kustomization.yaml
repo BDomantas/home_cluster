@@ -1,7 +1,7 @@
 resources:
   - namespaces.yaml
-  - apps/sealed-secrets.yaml
-  - apps/argocd-secrets.yaml
+  - apps/infisical-operator.yaml
+  - apps/infisical-bootstrap.yaml
   - apps/monitoring.yaml
   - apps/logging.yaml
   - apps/promtail.yaml

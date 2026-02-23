@@ -1,0 +1,6 @@
+resources:
+  - reviewer-service-account.yaml
+  - reviewer-cluster-role-binding.yaml
+  - reviewer-token-secret.yaml
+  - workload-service-account.yaml
+  - workload-service-account-argocd.yaml

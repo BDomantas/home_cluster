@@ -1,0 +1,28 @@
+apiVersion: secrets.infisical.com/v1alpha1
+kind: InfisicalSecret
+metadata:
+  name: github-repo-creds
+  namespace: argocd
+spec:
+  authentication:
+    kubernetesAuth:
+      identityId: ${INFISICAL_IDENTITY_ID}
+      autoCreateServiceAccountToken: true
+      serviceAccountRef:
+        name: infisical-argocd-service-account
+        namespace: argocd
+      secretsScope:
+        projectSlug: ${INFISICAL_PROJECT_SLUG}
+        envSlug: ${INFISICAL_ENV_SLUG}
+        secretsPath: "${INFISICAL_ARGOCD_GITHUB_REPO_CREDS_PATH}"
+        recursive: true
+  managedKubeSecretReferences:
+    - secretName: github-repo-creds
+      secretNamespace: argocd
+      creationPolicy: Orphan
+      template:
+        includeAllSecrets: true
+        metadata:
+          labels:
+            argocd.argoproj.io/secret-type: repo-creds
+
