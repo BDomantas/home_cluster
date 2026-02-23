@@ -9,7 +9,7 @@ REPO_ROOT="$(cd "$BOOTSTRAP_DIR/.." && pwd)"
 
 echo "[phase1] Installing Argo CD bootstrap without root app..."
 ENABLE_ARGOCD_PORT_FORWARD=false APPLY_ROOT_APP=false RESTART_REPO_SERVER=false \
-  "$SCRIPT_DIR/bootstrap.sh"
+  bash "$SCRIPT_DIR/bootstrap.sh"
 
 echo "[phase1] Installing Infisical operator (imperative, phase1 only)..."
 helm repo add infisical https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/ --force-update >/dev/null

@@ -41,6 +41,9 @@ wait_for_k3s() {
   until kubectl get nodes >/dev/null 2>&1; do
     sleep 2
   done
+  until [[ "$(kubectl get nodes --no-headers 2>/dev/null | wc -l | tr -d ' ')" -ge 1 ]]; do
+    sleep 2
+  done
   kubectl wait --for=condition=Ready node --all --timeout=300s
 }
 
@@ -82,7 +85,7 @@ run_repo_bootstrap() {
 
   export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
   export ENABLE_ARGOCD_PORT_FORWARD=false
-  "$SCRIPT_DIR/bootstrap-infisical-phase1.sh"
+  bash "$SCRIPT_DIR/bootstrap-infisical-phase1.sh"
 }
 
 print_next_steps() {
