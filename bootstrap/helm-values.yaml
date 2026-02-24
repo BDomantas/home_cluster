@@ -1,4 +1,9 @@
 server:
   service:
     type: ClusterIP
+    annotations:
+      netbird.io/expose: "true"
+      netbird.io/resource-name: "argocd"
+      netbird.io/groups: "argocd"
+      netbird.io/policy: "argocd"
 # optional: ingress, admin password, etc.
