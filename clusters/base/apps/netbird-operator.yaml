@@ -26,7 +26,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: netbird
 
-  # Keep manual until the NetBird API key secret exists in the cluster.
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
