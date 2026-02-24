@@ -49,11 +49,15 @@ for v in \
   INFISICAL_IDENTITY_ID \
   INFISICAL_PROJECT_SLUG \
   INFISICAL_ENV_SLUG \
+  INFISICAL_HOST_API \
   INFISICAL_ARGOCD_GITHUB_REPO_CREDS_PATH \
   INFISICAL_ARGOCD_GHCR_OCI_CREDS_PATH \
   INFISICAL_APP_CONFIG_NAMESPACE \
   INFISICAL_APP_CONFIG_SECRET_NAME \
-  INFISICAL_APP_CONFIG_PATH; do
+  INFISICAL_APP_CONFIG_PATH \
+  INFISICAL_NETBIRD_SECRET_NAMESPACE \
+  INFISICAL_NETBIRD_SECRET_NAME \
+  INFISICAL_NETBIRD_OPERATOR_API_KEY_PATH; do
   require_var "$v"
 done
 
@@ -67,6 +71,9 @@ render_template \
 render_template \
   "$REPO_ROOT/platform/infisical/templates/apps/app-config.yaml.tmpl" \
   "$GENERATED_DIR/apps/app-config.yaml"
+render_template \
+  "$REPO_ROOT/platform/infisical/templates/apps/netbird-mgmt-api-key.yaml.tmpl" \
+  "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml"
 
 echo "[phase2] Applying InfisicalSecret CRs for Argo CD repo credentials..."
 kubectl apply -f "$GENERATED_DIR/argocd/github-repo-creds.yaml"
@@ -74,6 +81,7 @@ kubectl apply -f "$GENERATED_DIR/argocd/ghcr-oci-creds.yaml"
 
 echo "[phase2] Applying app InfisicalSecret CR(s)..."
 kubectl apply -f "$GENERATED_DIR/apps/app-config.yaml"
+kubectl apply -f "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml"
 
 echo "[phase2] Waiting for Argo CD GitHub repo credentials secret..."
 until kubectl -n argocd get secret github-repo-creds >/dev/null 2>&1; do
@@ -82,6 +90,11 @@ done
 
 echo "[phase2] Waiting for Argo CD GHCR OCI repo credentials secret..."
 until kubectl -n argocd get secret ghcr-oci-creds >/dev/null 2>&1; do
+  sleep 2
+done
+
+echo "[phase2] Waiting for NetBird operator API key secret..."
+until kubectl -n "$INFISICAL_NETBIRD_SECRET_NAMESPACE" get secret "$INFISICAL_NETBIRD_SECRET_NAME" >/dev/null 2>&1; do
   sleep 2
 done
 
@@ -96,3 +109,5 @@ echo
 echo "Phase 2 complete."
 echo "Check Argo apps:"
 echo "  kubectl get applications -n argocd"
+echo "Check NetBird API key secret:"
+echo "  kubectl get secret -n $INFISICAL_NETBIRD_SECRET_NAMESPACE $INFISICAL_NETBIRD_SECRET_NAME"

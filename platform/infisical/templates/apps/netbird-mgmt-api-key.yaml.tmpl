@@ -1,8 +1,8 @@
 apiVersion: secrets.infisical.com/v1alpha1
 kind: InfisicalSecret
 metadata:
-  name: github-repo-creds
-  namespace: argocd
+  name: ${INFISICAL_NETBIRD_SECRET_NAME}
+  namespace: ${INFISICAL_NETBIRD_SECRET_NAMESPACE}
 spec:
   hostAPI: ${INFISICAL_HOST_API}
   authentication:
@@ -10,19 +10,16 @@ spec:
       identityId: ${INFISICAL_IDENTITY_ID}
       autoCreateServiceAccountToken: true
       serviceAccountRef:
-        name: infisical-argocd-service-account
-        namespace: argocd
+        name: infisical-service-account
+        namespace: apps
       secretsScope:
         projectSlug: ${INFISICAL_PROJECT_SLUG}
         envSlug: ${INFISICAL_ENV_SLUG}
-        secretsPath: "${INFISICAL_ARGOCD_GITHUB_REPO_CREDS_PATH}"
+        secretsPath: "${INFISICAL_NETBIRD_OPERATOR_API_KEY_PATH}"
         recursive: true
   managedKubeSecretReferences:
-    - secretName: github-repo-creds
-      secretNamespace: argocd
+    - secretName: ${INFISICAL_NETBIRD_SECRET_NAME}
+      secretNamespace: ${INFISICAL_NETBIRD_SECRET_NAMESPACE}
       creationPolicy: Orphan
       template:
         includeAllSecrets: true
-        metadata:
-          labels:
-            argocd.argoproj.io/secret-type: repo-creds

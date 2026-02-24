@@ -94,6 +94,7 @@ print_next_steps() {
   echo "Next steps:"
   echo "  - Finish Infisical Kubernetes auth in UI (token reviewer JWT + CA + API host)"
   echo "  - Create Infisical secrets at /argocd/github-repo-creds and /argocd/ghcr-oci-creds"
+  echo "  - Create Infisical secret path /netbird/operator with key NB_API_KEY (NetBird PAT)"
   echo "  - Copy bootstrap/infisical.env.example to bootstrap/infisical.env and fill values"
   echo "  - Run check:  bash bootstrap/scripts/check-infisical-phase2.sh"
   echo "  - Run phase 2: bash bootstrap/scripts/bootstrap-infisical-phase2.sh"

@@ -74,3 +74,11 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+
+gateway:
+  service:
+    annotations:
+      netbird.io/expose: "true"
+      netbird.io/resource-name: "loki"
+      netbird.io/groups: "observability"
+      netbird.io/policy: "observability"

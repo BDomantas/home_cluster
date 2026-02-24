@@ -5,3 +5,5 @@ resources:
   - apps/monitoring.yaml
   - apps/logging.yaml
   - apps/promtail.yaml
+  - apps/netbird-operator.yaml
+  - apps/netbird-operator-config.yaml

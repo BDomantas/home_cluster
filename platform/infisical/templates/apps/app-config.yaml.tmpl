@@ -4,6 +4,7 @@ metadata:
   name: ${INFISICAL_APP_CONFIG_SECRET_NAME}
   namespace: ${INFISICAL_APP_CONFIG_NAMESPACE}
 spec:
+  hostAPI: ${INFISICAL_HOST_API}
   authentication:
     kubernetesAuth:
       identityId: ${INFISICAL_IDENTITY_ID}
@@ -22,4 +23,3 @@ spec:
       creationPolicy: Orphan
       template:
         includeAllSecrets: true
-

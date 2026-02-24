@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: netbird-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://netbirdio.github.io/helms
+      chart: kubernetes-operator
+      targetRevision: 0.2.0
+      helm:
+        releaseName: netbird-operator
+        valueFiles:
+          - $values/platform/netbird/operator-values.yaml
+
+    - repoURL: https://github.com/BDomantas/home_cluster.git
+      targetRevision: master
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: netbird
+
+  # Keep manual until the NetBird API key secret exists in the cluster.
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

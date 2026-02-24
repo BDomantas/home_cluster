@@ -1,0 +1,17 @@
+# NetBird Kubernetes Operator config chart values
+# This chart configures routing peers and policy bases used by service annotations.
+
+router:
+  enabled: true
+
+# Expose the Kubernetes API server through NetBird so kubectl can be used over NetBird.
+kubernetesAPI:
+  enabled: true
+
+# Policy bases referenced by Service annotations (netbird.io/policy).
+# "All" is convenient for a homelab but broad; replace with your real NetBird groups.
+policies:
+  observability:
+    name: Observability Access
+    sourceGroups:
+      - All

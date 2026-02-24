@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: netbird-operator-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://netbirdio.github.io/helms
+      chart: netbird-operator-config
+      targetRevision: 0.2.0
+      helm:
+        releaseName: netbird-operator-config
+        valueFiles:
+          - $values/platform/netbird/operator-config-values.yaml
+
+    - repoURL: https://github.com/BDomantas/home_cluster.git
+      targetRevision: master
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: netbird
+
+  # Depends on the operator CRDs and NetBird API credentials.
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

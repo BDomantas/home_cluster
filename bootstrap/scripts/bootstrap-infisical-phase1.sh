@@ -17,12 +17,15 @@ helm repo update >/dev/null
 helm upgrade --install infisical-operator infisical/secrets-operator \
   -n infisical-system \
   --create-namespace \
-  --version 0.10.23
+  --version 0.10.25
 
 echo "[phase1] Waiting for Infisical CRD registration..."
 until kubectl get crd infisicalsecrets.secrets.infisical.com >/dev/null 2>&1; do
   sleep 2
 done
+
+echo "[phase1] Applying base namespaces required before root app..."
+kubectl apply -f "$REPO_ROOT/clusters/base/namespaces.yaml"
 
 echo "[phase1] Applying cluster-side Infisical Kubernetes auth bootstrap resources..."
 kubectl apply -k "$REPO_ROOT/platform/infisical/bootstrap"

@@ -1,0 +1,14 @@
+# NetBird Kubernetes Operator (core) values
+# Docs: https://docs.netbird.io/manage/integrations/kubernetes
+
+# Enables service exposure via Service annotations (netbird.io/*).
+ingress:
+  enabled: true
+
+# Uncomment if you run self-hosted NetBird management instead of NetBird Cloud.
+# managementURL: "https://api.netbird.io:443"
+
+netbirdAPI:
+  keyFromSecret:
+    name: netbird-mgmt-api-key
+    key: NB_API_KEY

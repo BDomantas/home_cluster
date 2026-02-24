@@ -59,11 +59,15 @@ for v in \
   INFISICAL_IDENTITY_ID \
   INFISICAL_PROJECT_SLUG \
   INFISICAL_ENV_SLUG \
+  INFISICAL_HOST_API \
   INFISICAL_ARGOCD_GITHUB_REPO_CREDS_PATH \
   INFISICAL_ARGOCD_GHCR_OCI_CREDS_PATH \
   INFISICAL_APP_CONFIG_NAMESPACE \
   INFISICAL_APP_CONFIG_SECRET_NAME \
-  INFISICAL_APP_CONFIG_PATH; do
+  INFISICAL_APP_CONFIG_PATH \
+  INFISICAL_NETBIRD_SECRET_NAMESPACE \
+  INFISICAL_NETBIRD_SECRET_NAME \
+  INFISICAL_NETBIRD_OPERATOR_API_KEY_PATH; do
   require_var "$v"
 done
 
@@ -79,11 +83,15 @@ render_template \
 render_template \
   "$REPO_ROOT/platform/infisical/templates/apps/app-config.yaml.tmpl" \
   "$GENERATED_DIR/apps/app-config.yaml"
+render_template \
+  "$REPO_ROOT/platform/infisical/templates/apps/netbird-mgmt-api-key.yaml.tmpl" \
+  "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml"
 
 for f in \
   "$GENERATED_DIR/argocd/github-repo-creds.yaml" \
   "$GENERATED_DIR/argocd/ghcr-oci-creds.yaml" \
-  "$GENERATED_DIR/apps/app-config.yaml"; do
+  "$GENERATED_DIR/apps/app-config.yaml" \
+  "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml"; do
   validate_no_placeholders "$f"
 done
 
@@ -94,9 +102,11 @@ if kubectl version --request-timeout=3s >/dev/null 2>&1; then
     kubectl apply --dry-run=client --validate=false -f "$GENERATED_DIR/argocd/github-repo-creds.yaml" >/dev/null
     kubectl apply --dry-run=client --validate=false -f "$GENERATED_DIR/argocd/ghcr-oci-creds.yaml" >/dev/null
     kubectl apply --dry-run=client --validate=false -f "$GENERATED_DIR/apps/app-config.yaml" >/dev/null
+    kubectl apply --dry-run=client --validate=false -f "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml" >/dev/null
   else
     kubectl apply --dry-run=client -f "$GENERATED_DIR/argocd/ghcr-oci-creds.yaml" >/dev/null
     kubectl apply --dry-run=client -f "$GENERATED_DIR/apps/app-config.yaml" >/dev/null
+    kubectl apply --dry-run=client -f "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml" >/dev/null
   fi
 else
   echo "[check] Kubernetes API not reachable, skipping kubectl validation."
@@ -108,12 +118,18 @@ if ! rg -n 'argocd\.argoproj\.io/secret-type:\s*repo-creds' "$GENERATED_DIR/argo
   exit 1
 fi
 
+if ! rg -n "secretName:\\s*${INFISICAL_NETBIRD_SECRET_NAME}" "$GENERATED_DIR/apps/netbird-mgmt-api-key.yaml" >/dev/null 2>&1; then
+  echo "ERROR: NetBird managed secret name not found in rendered NetBird manifest."
+  exit 1
+fi
+
 echo
 echo "Phase 2 check passed."
 echo "Rendered files:"
 echo "  $GENERATED_DIR/argocd/github-repo-creds.yaml"
 echo "  $GENERATED_DIR/argocd/ghcr-oci-creds.yaml"
 echo "  $GENERATED_DIR/apps/app-config.yaml"
+echo "  $GENERATED_DIR/apps/netbird-mgmt-api-key.yaml"
 echo
 echo "Next step:"
 echo "  bash bootstrap/scripts/bootstrap-infisical-phase2.sh"

@@ -4,6 +4,7 @@ metadata:
   name: ghcr-oci-creds
   namespace: argocd
 spec:
+  hostAPI: ${INFISICAL_HOST_API}
   authentication:
     kubernetesAuth:
       identityId: ${INFISICAL_IDENTITY_ID}
@@ -25,4 +26,3 @@ spec:
         metadata:
           labels:
             argocd.argoproj.io/secret-type: repo-creds
-
