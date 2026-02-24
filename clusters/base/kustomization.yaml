@@ -8,3 +8,4 @@ resources:
   - apps/cert-manager.yaml
   - apps/netbird-operator.yaml
   - apps/netbird-operator-config.yaml
+  - apps/nginx-netbird-test.yaml

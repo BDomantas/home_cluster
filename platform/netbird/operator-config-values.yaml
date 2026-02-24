@@ -19,6 +19,10 @@ kubernetesAPI:
 # Policy bases referenced by Service annotations (netbird.io/policy).
 # "All" is convenient for a homelab but broad; replace with your real NetBird groups.
 policies:
+  default:
+    name: Default Access
+    sourceGroups:
+      - All
   kubernetes:
     name: Kubernetes API Access
     sourceGroups:
