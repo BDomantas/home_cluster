@@ -4,13 +4,25 @@
 router:
   enabled: true
 
+ingress:
+  # Required when using Service annotation netbird.io/policy and policy bases below.
+  allowAutomaticPolicyCreation: true
+
 # Expose the Kubernetes API server through NetBird so kubectl can be used over NetBird.
 kubernetesAPI:
   enabled: true
+  groups:
+    - kubernetes
+  policies:
+    - kubernetes
 
 # Policy bases referenced by Service annotations (netbird.io/policy).
 # "All" is convenient for a homelab but broad; replace with your real NetBird groups.
 policies:
+  kubernetes:
+    name: Kubernetes API Access
+    sourceGroups:
+      - All
   observability:
     name: Observability Access
     sourceGroups:
